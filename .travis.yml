@@ -1,0 +1,35 @@
+language: python
+
+cache: pip
+
+env:
+- TEST_DIR=/tmp/_vega_datasets
+
+matrix:
+  include:
+    - python: 3.5
+    - python: 3.6
+    - python: 3.7
+    - python: 3.8
+    - name: "lint"
+      python: 3.8
+      install:
+      script:
+        - black --check .
+        - mypy vega_datasets
+        - flake8 vega_datasets
+
+env:
+  global:
+    - TEST_DIR=/tmp/_vega_datasets/
+
+before_install:
+  - pip install pip --upgrade;
+  - pip install -r requirements_dev.txt
+
+install:
+  - pip install -e .;
+
+script:
+  - mkdir -p $TEST_DIR
+  - cd $TEST_DIR && pytest --pyargs --doctest-modules vega_datasets
